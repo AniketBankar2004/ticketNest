@@ -65,6 +65,26 @@ public class GlobalExceptionHandler {
                 .body(error);
     }
 
+    @ExceptionHandler(MovieNotFoundException.class)
+    public ResponseEntity<?> handleMovieNotFoundException(MovieNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) //404
+                .body(error);
+    }
+
+    @ExceptionHandler(ShowNotFoundException.class)
+    public ResponseEntity<?> handleShowNotFoundException(ShowNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) //404
+                .body(error);
+    }
+
 
 
 

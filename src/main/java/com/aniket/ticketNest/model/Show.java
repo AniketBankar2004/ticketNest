@@ -1,5 +1,6 @@
 package com.aniket.ticketNest.model;
 
+import com.aniket.ticketNest.dtos.ShowResponse;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -28,4 +29,13 @@ public class Show {
 
     @OneToMany(mappedBy = "show")
     private List<Ticket> tickets = new ArrayList<>();
+
+    public ShowResponse toShowResponse() {
+        return new ShowResponse(
+                this.id,
+                this.movie.getId(),
+                this.showDate,
+                this.startTime
+        );
+    }
 }
