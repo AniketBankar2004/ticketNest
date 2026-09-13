@@ -3,6 +3,7 @@ package com.aniket.ticketNest.model;
 import com.aniket.ticketNest.dtos.ShowResponse;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

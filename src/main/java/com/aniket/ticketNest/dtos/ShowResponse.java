@@ -7,7 +7,7 @@ public record ShowResponse(
         String id,
         String movieId,
         LocalDate showDate,
-        LocalTime startTime,
+        LocalTime startTime
 
 ) {
 }

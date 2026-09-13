@@ -87,5 +87,53 @@ public class GlobalExceptionHandler {
 
 
 
+    @ExceptionHandler(TicketAlreadyBookedException.class)
+    public ResponseEntity<?> handleTicketAlreadyBookedException(
+            TicketAlreadyBookedException ex
+    ){
+        Map<String, String> error = new HashMap<>();
+        error.put("message", ex.getMessage());
 
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(error);
+    }
+
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<?> handleUnauthorizedException(
+           UnauthorizedException ex
+    ){
+        Map<String, String> error = new HashMap<>();
+        error.put("message", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(error);
+    }
+
+    @ExceptionHandler(BookingNotFoundException.class)
+    public ResponseEntity<?> handleBookingNotFoundException(
+           BookingNotFoundException ex
+    ){
+        Map<String, String> error = new HashMap<>();
+        error.put("message", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(error);
+    }
+
+
+    @ExceptionHandler(BookingAlreadyCancelledException.class)
+    public ResponseEntity<?> handleBookingNotFoundException(
+            BookingAlreadyCancelledException ex
+    ){
+        Map<String, String> error = new HashMap<>();
+        error.put("message", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(error);
+    }
 }
