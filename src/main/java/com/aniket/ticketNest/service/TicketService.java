@@ -51,7 +51,7 @@ public class TicketService {
 
     public List<TicketResponse> getMyTickets(String userId) {
 
-        return ticketRepository.findByUserId(userId)
+        return ticketRepository.findByBookingUserId(userId)
                 .stream()
                 .map(this::toResponse)
                 .toList();

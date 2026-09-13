@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TicketRepository extends JpaRepository<Ticket, String> {
-    List<Ticket> findByUserId(String userId);
-
+    List<Ticket> findByBookingUserId(String userId);
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("""
         SELECT t
