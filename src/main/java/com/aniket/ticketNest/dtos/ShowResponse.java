@@ -6,6 +6,7 @@ import java.time.LocalTime;
 public record ShowResponse(
         String id,
         String movieId,
+        String movieName,
         LocalDate showDate,
         LocalTime startTime
 

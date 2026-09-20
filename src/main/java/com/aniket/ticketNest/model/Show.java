@@ -35,6 +35,7 @@ public class Show {
         return new ShowResponse(
                 this.id,
                 this.movie.getId(),
+                this.movie.getTitle(),
                 this.showDate,
                 this.startTime
         );

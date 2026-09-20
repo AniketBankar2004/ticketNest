@@ -6,7 +6,5 @@ import java.time.LocalTime;
 public record ShowRequest(
         String movieId,
         LocalDate showDate,
-        LocalTime startTime,
-        LocalTime endTime
-) {
+        LocalTime startTime) {
 }
