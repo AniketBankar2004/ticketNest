@@ -23,15 +23,40 @@ public class BookingService {
     private final TicketRepository ticketRepository;
     private final BookingRepository bookingRepository;
 
+    @Transactional
     public BookingResponse bookTickets(
             String showId,
             List<String> seatNumbers,
             String userId
-    ){
+    ) {
+
         Show show = showRepository.findById(showId)
-                .orElseThrow(()->new ShowNotFoundException("Show not found: "+showId));
+                .orElseThrow(() ->
+                        new ShowNotFoundException("Show not found: " + showId)
+                );
 
+        // 1. First lock and validate all seats
+        List<Ticket> tickets = new ArrayList<>();
 
+        for (String seatNumber : seatNumbers) {
+
+            Ticket ticket = ticketRepository.findForUpdate(showId, seatNumber)
+                    .orElseThrow(() ->
+                            new ShowNotFoundException(
+                                    "Seat already booked: " + seatNumber
+                            )
+                    );
+
+            if (ticket.getStatus() == TicketStatus.BOOKED) {
+                throw new TicketAlreadyBookedException(
+                        "Seat already booked: " + seatNumber
+                );
+            }
+
+            tickets.add(ticket);
+        }
+
+        // 2. Now create the Booking
         Booking booking = Booking.builder()
                 .userId(userId)
                 .show(show)
@@ -39,31 +64,16 @@ public class BookingService {
                 .status(BookingStatus.CONFIRMED)
                 .build();
 
-        List<Ticket> tickets = new ArrayList<>();
-
-        for(String seatNumber:seatNumbers){
-            Ticket ticket = ticketRepository.findForUpdate(showId,seatNumber)
-                    .orElseThrow(()->
-                            new ShowNotFoundException("Seat already booked: "+seatNumber));
-
-
-            if(ticket.getStatus() == TicketStatus.BOOKED){
-                throw new TicketAlreadyBookedException(
-                        "Seat already booked "+seatNumber
-                );
-            }
-
+        // 3. Attach booking to tickets
+        for (Ticket ticket : tickets) {
             ticket.setStatus(TicketStatus.BOOKED);
-
             ticket.setBooking(booking);
-
-            tickets.add(ticket);
         }
 
-        booking.setTickets(tickets);
-
+        // 4. Save booking FIRST
         Booking savedBooking = bookingRepository.save(booking);
 
+        // 5. Then save tickets
         ticketRepository.saveAll(tickets);
 
         return BookingResponse.builder()
