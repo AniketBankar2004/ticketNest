@@ -42,4 +42,10 @@ public class Booking {
             orphanRemoval = true
     )
     private List<Ticket> tickets = new ArrayList<>();
+
+    public BigDecimal calculateTotalAmount() {
+        return tickets.stream()
+                .map(Ticket::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 }

@@ -1,6 +1,7 @@
 package com.aniket.ticketNest.dtos;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public record ShowResponse(
@@ -8,7 +9,7 @@ public record ShowResponse(
         String movieId,
         String movieName,
         LocalDate showDate,
-        LocalTime startTime
+        LocalDateTime startTime
 
 ) {
 }

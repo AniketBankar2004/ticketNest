@@ -2,11 +2,13 @@ package com.aniket.ticketNest.controller;
 
 import com.aniket.ticketNest.dtos.BookingRequest;
 import com.aniket.ticketNest.dtos.BookingResponse;
+import com.aniket.ticketNest.model.User;
 import com.aniket.ticketNest.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -21,7 +23,9 @@ public class BookingController {
             @RequestBody BookingRequest request,
             Authentication authentication
     ){
-        String userId = authentication.getName();
+        User user = (User) authentication.getPrincipal();
+
+        String userId = user.getId().toString();
 
         return ResponseEntity.ok(bookingService.bookTickets(
                 showId,
@@ -30,12 +34,24 @@ public class BookingController {
         ));
     }
 
+    @GetMapping("/bookings/my")
+    public ResponseEntity<List<BookingResponse>> getMyBookings(
+            Authentication authentication
+    ){
+        User user = (User) authentication.getPrincipal();
+
+        String userId = user.getId().toString();
+        return ResponseEntity.ok(bookingService.getBookingsByUserId(userId));
+    }
+
     @DeleteMapping("/bookings/{bookingId}")
     public ResponseEntity<BookingResponse> cancelBooking(
             @PathVariable String bookingId,
             Authentication authentication
     ) {
-        String userId = authentication.getName();
+        User user = (User) authentication.getPrincipal();
+
+        String userId = user.getId().toString();
 
         BookingResponse response = bookingService.cancelBooking(
                 bookingId,

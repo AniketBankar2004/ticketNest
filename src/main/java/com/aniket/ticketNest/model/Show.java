@@ -6,6 +6,7 @@ import lombok.Data;
 import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class Show {
 
     private LocalDate showDate;
 
-    private LocalTime startTime;
+    private LocalDateTime startTime;
 
     @OneToMany(mappedBy = "show")
     private List<Ticket> tickets = new ArrayList<>();

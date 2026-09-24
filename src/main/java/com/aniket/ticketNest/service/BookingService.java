@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +70,14 @@ public class BookingService {
             ticket.setStatus(TicketStatus.BOOKED);
             ticket.setBooking(booking);
         }
+
+        booking.setTickets(tickets); // keep both sides in sync
+        BigDecimal totalAmount = tickets.stream()
+                .map(Ticket::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        booking.setTotalAmount(totalAmount);
+
+
 
         // 4. Save booking FIRST
         Booking savedBooking = bookingRepository.save(booking);
@@ -137,5 +146,43 @@ public class BookingService {
                 .bookingTime(booking.getBookingTime())
                 .status(booking.getStatus())
                 .build();
+    }
+
+    private TicketResponse toResponse(Ticket ticket){
+        return TicketResponse.builder()
+                .id(ticket.getId())
+                .showId(ticket.getShow().getId())
+                .seatNumber(ticket.getSeatNumber())
+                .status(ticket.getStatus())
+                .price(ticket.getPrice())
+                .build();
+    }
+
+    private BookingResponse toBookingResponse(Booking booking){
+        return BookingResponse.builder()
+                .id(booking.getId())
+                .userId(booking.getUserId())
+                .showId(booking.getShow().getId())
+                .movieTitle(booking.getShow().getMovie().getTitle())
+                .bookingTime(booking.getBookingTime())
+                .status(booking.getStatus())
+                .tickets(booking.getTickets()
+                        .stream()
+                        .map(this::toResponse)
+                        .toList())
+                .totalAmount(booking.calculateTotalAmount())
+                .showTime(booking.getShow().getStartTime())
+                .build();
+
+    }
+    public List<BookingResponse> getBookingsByUserId(String userId) {
+
+        List<Booking> myBookings = bookingRepository.findByUserId(userId);
+
+        return myBookings.
+                stream()
+                .map(this::toBookingResponse)
+                .toList();
+
     }
 }
